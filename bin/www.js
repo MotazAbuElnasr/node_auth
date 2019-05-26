@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('nodeauth:server');
 var http = require('http');
 
 /**
@@ -82,9 +81,9 @@ function onError(error) {
  */
 
 function onListening() {
+  console.log("server is connected")
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
 }
