@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const passport = require("../config/passport");
-const User = require("../sequelize");
+const User = require("../sequelize").User
 router.post("/", async (req, res, next) => {
   console.log("login");
   passport.authenticate("login", async (err, user, message) => {
@@ -13,21 +13,23 @@ router.post("/", async (req, res, next) => {
       return res.status(403).send(message);
     }
     const username = user.username;
-    try {
-       await User.update(
-        {
-          first_name,
-          last_name,
-          email
-        },
-        {
-          where: {username}
-        }
-      );
-      res.status(200).send({message: "user created"});
-    } catch (error) {
-      res.send(error)
-    }
+    req.logIn(user,async ()=>{
+        try {
+            await User.update(
+                {
+                    first_name,
+                    last_name,
+                    email
+                },
+                {
+                    where: {username}
+                }
+                );
+                res.status(200).send({message: "user created"});
+            } catch (error) {
+                res.send(error)
+            }
+        })
   })(req, res, next);
 });
 
