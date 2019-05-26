@@ -8,7 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
-const User = require("../sequelize");
+const User = require("../sequelize").User;
 
 passport.use(
     "register",
@@ -18,8 +18,6 @@ passport.use(
             passReqToCallback: true
         },
         async (req, username, password, done) => {
-            console.log(username);
-            console.log("body", req.body);
             const { email } = req.body;
             try {
                 const user = await User.findOne({
@@ -47,7 +45,6 @@ passport.use(
             session: false
         },
         async (username, password, done) => {
-            console.log(username)
             try {
                 console.log("before user")
                 const user = await User.findOne({ where: { username, } });
@@ -75,14 +72,16 @@ const opts = {
 };
 
 passport.use('jwt', new JWTstrategy(opts, async (jwtPayload, done) => {
+    console.log(jwtPayload)
     try {
         const user = await User.findOne({ where: { id: jwtPayload.id } })
         const isAdmin = jwtPayload.isAdmin
-        console.log(jwtPayload.isAdmin)
+        console.log("jwt:=======================",jwtPayload.isAdmin)
         if (user) {
-            done(null, { user, isAdmin })
+            console.log("user is hereeeee")
+            return done(null, { user, isAdmin })
         }
-        done(null, false,{message:"user is not exist"})
+        return done(null, false,{message:"user is not exist"})
     } catch (error) {
         done(error)
     }

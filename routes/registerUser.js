@@ -3,8 +3,8 @@ var router = express.Router();
 const passport = require("../config/passport");
 const User = require("../sequelize").User
 router.post("/", async (req, res, next) => {
-  console.log("login");
-  passport.authenticate("login", async (err, user, message) => {
+  console.log("register");
+  passport.authenticate("register", async (err, user, message) => {
     if (err) {
       console.error(err);
     }
@@ -13,6 +13,7 @@ router.post("/", async (req, res, next) => {
       return res.status(403).send(message);
     }
     const username = user.username;
+    const {first_name,last_name,email} = req.body
     req.logIn(user,async ()=>{
         try {
             await User.update(

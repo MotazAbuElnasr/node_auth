@@ -15,7 +15,23 @@ router.post("/", async (req, res, next) => {
     if (message) {
       return res.status(403).send(message);
     }
-    const {isAdmin,user}=data
+    const {isAdmin}=data
+    if (isAdmin){
+      try {
+        const isDeleted = await User.destroy({where:{username:req.body.username}})
+        console.log(isDeleted)
+        if(isDeleted){
+          return res.status(200).send({message:"user has been deleted"})
+        } 
+        res.status(404).send({message:"user is not found"})
+      } catch (error) {
+        res.status(500).send()        
+      }
+    }
+    else{
+      return res.status(403).send()
+    }
+    
   })(req, res, next);
 });
 

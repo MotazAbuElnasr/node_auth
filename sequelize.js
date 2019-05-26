@@ -15,7 +15,7 @@ sequelize
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
-
+ 
 const User = UserModel(sequelize, Sequelize);
 const Admin = AdminModel(sequelize, Sequelize);
 Admin.belongsTo(User)
